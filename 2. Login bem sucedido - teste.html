@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Completo de Gestão</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Login */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+        }
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            animation: slideDown 0.5s;
+        }
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background: #27ae60;
+        }
+        .mensagem-erro {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <h2 class="login-title">Sistema de Gestão</h2>
+            <div class="form-group">
+                <label for="login-matricula">Matrícula:</label>
+                <input type="text" id="login-matricula" placeholder="Digite sua matrícula" value="admin">
+            </div>
+            <div class="form-group">
+                <label for="login-senha">Senha:</label>
+                <input type="password" id="login-senha" placeholder="Digite sua senha" value="admin">
+            </div>
+            <button onclick="fazerLogin()">Entrar</button>
+            <div id="login-message" class="mensagem-erro"></div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de dados de usuários (simulado)
+        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        
+        // Cria usuário admin se não existir
+        if (usuarios.length === 0) {
+            usuarios = [
+                {
+                    matricula: 'admin',
+                    nome: 'Administrador',
+                    perfil: 'admin',
+                    senha: 'admin' // Senha em texto puro apenas para demonstração
+                }
+            ];
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        }
+
+        // Função de login corrigida
+        function fazerLogin() {
+            const matricula = document.getElementById('login-matricula').value.trim();
+            const senha = document.getElementById('login-senha').value.trim();
+            const mensagemErro = document.getElementById('login-message');
+            
+            // Limpa mensagens anteriores
+            mensagemErro.style.display = 'none';
+            
+            // Validação básica
+            if (!matricula || !senha) {
+                mensagemErro.textContent = 'Por favor, preencha matrícula e senha';
+                mensagemErro.style.display = 'block';
+                return;
+            }
+            
+            // Busca usuário
+            const usuario = usuarios.find(u => u.matricula === matricula);
+            
+            if (!usuario) {
+                mensagemErro.textContent = 'Matrícula não encontrada';
+                mensagemErro.style.display = 'block';
+                return;
+            }
+            
+            // Verifica senha (em produção, usar hash!)
+            if (usuario.senha !== senha) {
+                mensagemErro.textContent = 'Senha incorreta';
+                mensagemErro.style.display = 'block';
+                return;
+            }
+            
+            // Login bem-sucedido
+            alert('Login bem-sucedido! Redirecionando...');
+            // Aqui você continuaria com a lógica para mostrar o sistema principal
+        }
+
+        // Evento para tecla Enter no campo de senha
+        document.getElementById('login-senha').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fazerLogin();
+            }
+        });
+    </script>
+</body>
+</html>
